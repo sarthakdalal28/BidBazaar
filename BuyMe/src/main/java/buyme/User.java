@@ -1,0 +1,118 @@
+package buyme;
+
+import java.sql.*;
+
+public class User {	
+	public void create(String name,String pass, String username, String email){
+		try {
+			Class.forName("com.mysql.jdbc.Driver");
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/buyme", "root",
+					"password");
+		    Statement st = con.createStatement();
+		    java.sql.Timestamp date = new java.sql.Timestamp(new java.util.Date().getTime());
+	    	String insertStatement = String.format("INSERT INTO User (created_at, full_name, password, username, email) VALUES ('%s', '%s', '%s', '%s', '%s');", date.toString(), name, pass, username, email);
+	    	st.executeUpdate(insertStatement);
+		}
+		catch(SQLException se) {} 
+		catch(Exception e) {}
+	}
+	
+	public static ResultSet getUser(String username,String password) throws Exception{
+		try {
+			Class.forName("com.mysql.jdbc.Driver");
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/buyme", "root",
+					"password");
+		    Statement st = con.createStatement();
+		    java.sql.Timestamp date = new java.sql.Timestamp(new java.util.Date().getTime());
+		    ResultSet rs;
+		    String selectStatement = "SELECT * FROM User WHERE username='"+username+"' AND password='"+password+"'";
+		    rs=st.executeQuery(selectStatement);
+		    return rs;
+		}
+		catch(SQLException se) {throw se;} 
+		catch(Exception e) {throw e;}
+	}
+	
+	public static ResultSet getUser(String username) throws Exception{ // OVERLOADED FOR JUST USER
+		try {
+			Class.forName("com.mysql.jdbc.Driver");
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/buyme", "root",
+					"password");
+		    Statement st = con.createStatement();
+		    java.sql.Timestamp date = new java.sql.Timestamp(new java.util.Date().getTime());
+		    ResultSet rs;
+		    String selectStatement = "SELECT * FROM User WHERE username='"+username+"'";
+		    rs=st.executeQuery(selectStatement);
+		    return rs;
+		}
+		catch(SQLException se) {throw se;} 
+		catch(Exception e) {throw e;}
+	}
+	
+	public static int getUserIDfromUsername(String username){
+		try {
+			ResultSet rs = getUser(username);
+			rs.next();
+			int user_id = rs.getInt("user_id");
+			return user_id;
+		} catch (Exception e) {
+			return -1;
+		}
+	}
+	
+	
+	
+	public ResultSet searchUsers(String search) throws Exception {
+		try {
+			Class.forName("com.mysql.jdbc.Driver");
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/buyme", "root",
+					"password");
+		    Statement st = con.createStatement();
+		    java.sql.Timestamp date = new java.sql.Timestamp(new java.util.Date().getTime());
+		    ResultSet rs;
+		    String selectStatement = "SELECT * FROM users WHERE username LIKE %'"+search+"'%";
+		    rs=st.executeQuery(selectStatement);
+		    return rs;
+		}
+		catch(SQLException se) {throw se;} 
+		catch(Exception e) {throw e;}
+	}
+	public void declareWinner() throws Exception {
+		try {
+			Class.forName("com.mysql.jdbc.Driver");
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/buyme", "root",
+					"password");
+			String query = "SELECT a.auction_id, a.item_name, u.user_id, a.current_bid " +
+		                   "FROM auction a " +
+		                   "INNER JOIN user u ON a.user_id = u.user_id " +
+		                   "WHERE a.end_date < NOW() AND a.current_bid = (SELECT MAX(price) FROM bid WHERE auction_id = a.auction_id)";
+		    Statement st = con.createStatement();
+		    ResultSet rs = st.executeQuery(query);
+
+		    while (rs.next()) {
+		        int auctionId = rs.getInt("auction_id");
+		        int userId = rs.getInt("user_id");
+		        String itemName = rs.getString("item_name");
+		        double currentBid = rs.getDouble("current_bid");
+		        String notificationMessage = "You won the auction for " + itemName + " with a bid of $" + currentBid + ".";
+		        String notificationQuery = "INSERT INTO notification (user_id, message) VALUES (" + userId + ", '" + notificationMessage + "')";
+		        st.executeUpdate(notificationQuery);
+		    }
+		} catch (SQLException e) {
+		    e.printStackTrace();
+		}
+
+	}
+	public void deleteUser(String username) throws Exception {
+		try {
+			Class.forName("com.mysql.jdbc.Driver");
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/buyme", "root",
+					"password");
+		    Statement st = con.createStatement();
+		    String deleteStatement = "DELETE FROM users WHERE username='"+username+"'";
+		    st.executeUpdate(deleteStatement);
+		}
+		catch(SQLException se) {throw se;} 
+		catch(Exception e) {throw e;}
+	}
+}

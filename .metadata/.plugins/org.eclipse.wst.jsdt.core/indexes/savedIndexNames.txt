@@ -1,0 +1,8 @@
+INDEX VERSION 1.4+C:\Users\sarth\OneDrive\Desktop\Rutgers\Sem 2\DBDS\Project\.metadata\.plugins\org.eclipse.wst.jsdt.core\indexes
+3752332918.index
+858525299.index
+2540946920.index
+1179451382.index
+3865350757.index
+652682099.index
+4139151361.index

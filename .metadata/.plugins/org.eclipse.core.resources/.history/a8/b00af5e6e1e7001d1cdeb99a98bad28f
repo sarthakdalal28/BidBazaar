@@ -1,0 +1,46 @@
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
+<%@ page import="buyme.Auction" %>
+<%@ page import="java.sql.*" %>
+
+<% 
+String auctionIdParam = request.getParameter("auction_id");
+if (auctionIdParam == null) {
+    // Handle the error gracefully, e.g. by displaying a user-friendly messageauction
+	int auctionId = 1;
+	String itemName = request.getParameter("item_name");
+	String buyAtPriceParam = request.getParameter("buy_at_price");
+	if (buyAtPriceParam == null || buyAtPriceParam.trim().isEmpty()) {
+	    // Handle the error gracefully, e.g. by displaying a user-friendly message
+		double buyAtPrice = 600.00;
+	}
+	else{
+	double buyAtPrice = Double.parseDouble(buyAtPriceParam);
+	}
+    double increment = Double.parseDouble(request.getParameter("increment"));
+    String itemDescription = request.getParameter("item_description");
+    String categoryName = request.getParameter("category_name");
+    String subcategoryName = request.getParameter("subcategory_name");
+    java.sql.Timestamp endDate = java.sql.Timestamp.valueOf(request.getParameter("endDate"));
+    Auction.edit(auctionId, itemName, buyAtPrice, increment, itemDescription, categoryName, subcategoryName, endDate);
+    out.println("Changes saved.");
+    out.println("<a href='custRepDashboard.jsp'>Return to dashboard.</a>");
+} else {
+    int auctionId = Integer.parseInt(auctionIdParam);
+    String itemName = request.getParameter("item_name");
+    if (buyAtPriceParam == null || buyAtPriceParam.trim().isEmpty()) {
+	    // Handle the error gracefully, e.g. by displaying a user-friendly message
+		double buyAtPrice = 600.00;
+	}
+	else{
+	double buyAtPrice = Double.parseDouble(buyAtPriceParam);
+	}
+    double increment = Double.parseDouble(request.getParameter("increment"));
+    String itemDescription = request.getParameter("item_description");
+    String categoryName = request.getParameter("category_name");
+    String subcategoryName = request.getParameter("subcategory_name");
+    java.sql.Timestamp endDate = java.sql.Timestamp.valueOf(request.getParameter("endDate"));
+    Auction.edit(auctionId, itemName, buyAtPrice, increment, itemDescription, categoryName, subcategoryName, endDate);
+    out.println("Changes saved.");
+    out.println("<a href='custRepDashboard.jsp'>Return to dashboard.</a>");
+}
+%>

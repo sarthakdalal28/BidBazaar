@@ -1,0 +1,54 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Buy Me</title>
+<%@ include file="./partials/commonCss.jsp"%>
+<%@ page import="com.mysql.jdbc.Driver" %>
+
+<%@page import="buyme.User"%>
+<%@page import="java.sql.*"%>
+<%@page import="java.util.*"%>
+<%@page import="java.text.*"%>
+
+<link rel="stylesheet" href="css/userPage.css" type="text/css">
+
+</head>
+<body>
+	<%@ include file="./partials/navbar.jsp"%>
+	<div class="content">
+		<div class="user-container">
+			<div class="user-info-container">
+				<%
+					if ((session.getAttribute("user") == null)) {
+						response.sendRedirect("login.jsp");
+					} else {
+						String user = (String) session.getAttribute("user");
+						ResultSet rs = User.getUser(user);
+						rs.next();
+						String fullName = rs.getString("name");
+						java.sql.Date created_at = rs.getDate("created_at");
+						
+						DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");  
+			            String strDate = dateFormat.format(created_at);  
+				%>
+				
+				<div class="card">
+					<p class="hdr-med"> <%=fullName %></p> <!-- FULLNAME -->
+					<br>
+					<p class="body-sml">User since: <%=strDate %></p>
+				</div>
+				<%
+					}
+				%>
+			</div>
+
+		</div>
+		
+		
+	</div>
+	<%@ include file="./partials/commonScripts.jsp"%>
+</body>
+</html>

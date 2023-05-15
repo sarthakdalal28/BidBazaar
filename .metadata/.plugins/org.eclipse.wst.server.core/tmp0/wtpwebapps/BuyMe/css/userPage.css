@@ -1,0 +1,44 @@
+* {
+	margin: 0;
+	padding: 0;
+}
+
+html {
+	height: 100%;
+	margin: 0;
+    padding: 0;
+	background: rgb(143, 207, 217);
+	background: linear-gradient(16deg, rgb(143, 207, 217) 0%, rgb(197,229,233) 28%, rgba(199,255,247,1) 100%);
+	min-height: 100%;
+	background-repeat: no-repeat;
+	background-image: url("7.jpg");
+    background-attachment: fixed;
+    background-size: cover;
+	
+}
+body {
+    margin: 0;
+    padding: 0;
+}
+.user-container {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: space-around;
+}
+.user-info-container {
+	margin: 3em;
+	text-align: center;
+/* 	display: flex;
+	flex-direction: column;
+	justify-content: center;
+ */}
+.pro-pic {
+	border-radius: 20%;
+	border: .2em solid whitesmoke;
+}
+.notification-container {
+	margin: 3em;
+}
+.notification-body {
+	color: #595067;
+}

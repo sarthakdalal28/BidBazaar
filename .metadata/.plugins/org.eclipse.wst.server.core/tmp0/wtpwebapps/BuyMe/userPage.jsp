@@ -1,0 +1,82 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Buy Me</title>
+<%@ include file="./partials/commonCss.jsp"%>
+<%@ page import="com.mysql.jdbc.Driver" %>
+
+<%@page import="buyme.User"%>
+<%@page import="java.sql.*"%>
+<%@page import="java.util.*"%>
+<%@page import="java.text.*"%>
+
+<link rel="stylesheet" href="css/userPage.css" type="text/css">
+
+</head>
+<body>
+	<%@ include file="./partials/navbar.jsp"%>
+	<div class="content">
+		<div class="user-container">
+			<div class="user-info-container">
+				<%
+					if ((session.getAttribute("user") == null)) {
+						response.sendRedirect("login.jsp");
+					} else {
+						String user = (String) session.getAttribute("user");
+						ResultSet rs = User.getUser(user);
+						rs.next();
+						String fullName = rs.getString("name");
+						java.sql.Date created_at = rs.getDate("created_at");
+						
+						DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");  
+			            String strDate = dateFormat.format(created_at);  
+				%>
+				
+				<div class="card">
+					<p class="hdr-med"> <%=fullName %></p> <!-- FULLNAME -->
+					<br>
+					<p class="body-sml">User since: <%=strDate %></p>
+				</div>
+				<%
+					}
+				%>
+			</div>
+			<div class="notification-container">
+				<p class="hdr-med">Notifications</p>
+				<div class="card notification">
+				<% 
+    				User user = new User();
+    				user.declareWinner();
+				%>
+				<%
+					Class.forName("com.mysql.jdbc.Driver");
+					Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/buyme", "root",
+						"password");
+					Statement st = con.createStatement();
+    				int userId = User.getUserIDfromUsername((String)session.getAttribute("user"));
+					String query = "SELECT * FROM notification WHERE user_id = " + userId + " ORDER BY notification_id DESC LIMIT 1";
+   					ResultSet rs = st.executeQuery(query);
+    
+    				while (rs.next()) {
+        				String message = rs.getString("message");
+        				Timestamp createdAt = rs.getTimestamp("timestamp");
+        %>
+					<p class="body-sml"><%=createdAt.toString()%></p>
+					<p class="body-lrg notification-body"><%=message%></p>
+				<%}%>
+				<div class="card notification">
+					<p class="body-sml">05-01-2023 10:59pm</p>
+					<p class="body-lrg notification-body">Niyati Jain placed a higher bid on Acura Integra</p>
+				</div>
+			</div>
+			
+		</div>
+		
+		
+	</div>
+	<%@ include file="./partials/commonScripts.jsp"%>
+</body>
+</html>
